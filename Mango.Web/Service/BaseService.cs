@@ -3,7 +3,7 @@ using System.Text;
 using Mango.Web.Models;
 using Mango.Web.Service.IService;
 using Newtonsoft.Json;
-using static Mango.Web.Models.Utility.SD;
+using static Mango.Web.Utility.SD;
 
 namespace Mango.Web.Service
 {
