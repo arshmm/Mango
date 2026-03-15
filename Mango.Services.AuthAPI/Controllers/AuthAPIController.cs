@@ -45,6 +45,20 @@ namespace Mango.Services.AuthAPI.Controllers
             return Ok(_response);
         }
 
+        [HttpPost("AssignRole")]
+        public async Task<IActionResult> AssignRole([FromBody] RegistrationRequestDto model)
+        {
+            var res = await _authService.AssignRole(model.Email, model.RoleName.ToUpper());
+            if (!res)
+            {
+                _response.IsSuccess = false;
+                _response.Message = "Error occured";
+                return BadRequest(_response);
+            }
+            return Ok(_response);
+        }
+
+
     }
 
 }
