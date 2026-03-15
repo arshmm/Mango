@@ -1,6 +1,6 @@
 ﻿namespace Mango.Services.AuthAPI.Models.Dto
 {
-    public class RegistrationRequestDto
+    public class LoginRequestDto
     {
 
 
