@@ -8,5 +8,9 @@
         {
             GET, POST, PUT, DELETE
         }
+        public const string RoleAdmin = "ADMIN";
+        public const string RoleCustomer = "CUSTOMER";
+
+
     }
 }
