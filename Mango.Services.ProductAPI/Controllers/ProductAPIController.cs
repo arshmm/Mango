@@ -1,34 +1,35 @@
 ﻿using AutoMapper;
-using Mango.Services.CouponAPI.Data;
-using Mango.Services.CouponAPI.Models;
-using Mango.Services.CouponAPI.Models.Dto;
+using Mango.Services.ProductAPI.Data;
+using Mango.Services.ProductAPI.Models;
+using Mango.Services.ProductAPI.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Mango.Services.CouponAPI.Controllers
+namespace Mango.Services.ProductAPI.Controllers
 {
-    [Route("api/coupon")]
+    [Route("api/product")]
     [ApiController]
-    //   [Authorize]
-    public class CouponAPIController : ControllerBase
+    [Authorize]
+    public class ProductAPIController : ControllerBase
     {
         private readonly AppDbContext _db;
         private ResponseDto _response;
         private IMapper _mapper;
-        public CouponAPIController(AppDbContext db, IMapper mapper)
 
+        public ProductAPIController(AppDbContext appDbContext, IMapper mapper)
         {
-            _db = db;
-            _response = new ResponseDto();
+            _db = appDbContext;
             _mapper = mapper;
+            _response = new ResponseDto();
         }
+
         [HttpGet]
         public ResponseDto Get()
         {
             try
             {
-                IEnumerable<Coupon> objList = _db.Coupons.ToList();
-                _response.Result = _mapper.Map<IEnumerable<CouponDto>>(objList);
+                IEnumerable<Product> objList = _db.Products.ToList();
+                _response.Result = _mapper.Map<IEnumerable<ProductDto>>(objList);
 
             }
             catch (Exception ex)
@@ -45,26 +46,8 @@ namespace Mango.Services.CouponAPI.Controllers
         {
             try
             {
-                Coupon obj = _db.Coupons.First(u => u.CouponId == id);
-                _response.Result = _mapper.Map<CouponDto>(obj);
-
-            }
-            catch (Exception ex)
-            {
-                _response.Message = ex.Message;
-                _response.IsSuccess = false;
-            }
-            return _response;
-        }
-
-        [HttpGet]
-        [Route("/GetByCode/{code}")]
-        public ResponseDto GetByCode(string code)
-        {
-            try
-            {
-                Coupon obj = _db.Coupons.First(u => u.CouponCode.ToLower() == code);
-                _response.Result = _mapper.Map<CouponDto>(obj);
+                Product obj = _db.Products.First(u => u.ProductId == id);
+                _response.Result = _mapper.Map<ProductDto>(obj);
 
             }
             catch (Exception ex)
@@ -77,13 +60,13 @@ namespace Mango.Services.CouponAPI.Controllers
 
         [HttpPost]
         [Authorize(Roles = "ADMIN")]
-        public ResponseDto Post([FromBody] CouponDto couponDto)
+        public ResponseDto Post([FromBody] ProductDto productDto)
         {
             try
             {
-                _db.Coupons.Add(_mapper.Map<Coupon>(couponDto));
+                _db.Products.Add(_mapper.Map<Product>(productDto));
                 _db.SaveChanges();
-                _response.Result = couponDto;
+                _response.Result = productDto;
 
             }
             catch (Exception ex)
@@ -96,13 +79,13 @@ namespace Mango.Services.CouponAPI.Controllers
 
         [HttpPut]
         [Authorize(Roles = "ADMIN")]
-        public ResponseDto Put([FromBody] CouponDto couponDto)
+        public ResponseDto Put([FromBody] ProductDto productDto)
         {
             try
             {
-                _db.Coupons.Update(_mapper.Map<Coupon>(couponDto));
+                _db.Products.Update(_mapper.Map<Product>(productDto));
                 _db.SaveChanges();
-                _response.Result = couponDto;
+                _response.Result = productDto;
 
             }
             catch (Exception ex)
@@ -113,7 +96,6 @@ namespace Mango.Services.CouponAPI.Controllers
             return _response;
         }
 
-
         [HttpDelete]
         [Route("{id:int}")]
         [Authorize(Roles = "ADMIN")]
@@ -121,7 +103,7 @@ namespace Mango.Services.CouponAPI.Controllers
         {
             try
             {
-                _db.Coupons.Remove(_db.Coupons.First(u => u.CouponId == id));
+                _db.Products.Remove(_db.Products.First(u => u.ProductId == id));
                 _db.SaveChanges();
 
 
