@@ -23,9 +23,11 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 //settup of httpCLient for geting service from other services
 builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]));
+builder.Services.AddHttpClient("Coupon", u => u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CouponAPI"]));
 
 
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICouponService, CouponService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
