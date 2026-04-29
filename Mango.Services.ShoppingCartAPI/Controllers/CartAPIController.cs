@@ -2,6 +2,7 @@
 using Mango.Services.ShoppingCartAPI.Data;
 using Mango.Services.ShoppingCartAPI.Models;
 using Mango.Services.ShoppingCartAPI.Models.Dto;
+using Mango.Services.ShoppingCartAPI.Service.IService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,13 +15,49 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
         private readonly AppDbContext _db;
         private ResponseDto _response;
         private IMapper _mapper;
-        public CartAPIController(AppDbContext db, IMapper mapper)
+        private IProductService _productService;
+        public CartAPIController(AppDbContext db, IMapper mapper, IProductService productService)
 
         {
             _db = db;
             _response = new ResponseDto();
             _mapper = mapper;
+            _productService = productService;
+
         }
+
+        [HttpGet("GetCart/{userid}")]
+        public async Task<ResponseDto> GetCart(string userid)
+        {
+            try
+            {
+                CartDto cart = new()
+                {
+                    CartHeader = _mapper.Map<CartHeaderDto>(_db.CartHeaders.First(u => u.UserId == userid))
+                };
+                cart.CartDetails = _mapper.Map<IEnumerable<CartDetailsDto>>
+                    (_db.CartDetails.Where(u => u.CartHeaderId == cart.CartHeader.CartHeaderId));
+
+                foreach (var item in cart.CartDetails)
+                {
+                    item.Product = await _productService.GetProductbyId(item.ProductId);
+
+                    cart.CartHeader.CartTotal += (item.Count * item.Product.Price);
+                }
+
+                _response.Result = cart;
+
+            }
+            catch (Exception ex)
+            {
+                _response.Message = ex.Message;
+                _response.IsSuccess = false;
+
+            }
+            return _response;
+
+        }
+
         [HttpPost("CartUpsert")]
         public async Task<ResponseDto> Upsert(CartDto cartDto)
         {
