@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Mango.Services.ShoppingCartAPI.Controllers
 {
-    [Route("ShoppingCart/[controller]")]
+    [Route("api/cart")]
     [ApiController]
     public class CartAPIController : ControllerBase
     {
