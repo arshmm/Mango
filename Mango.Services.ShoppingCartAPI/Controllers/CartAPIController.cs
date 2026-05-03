@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Mango.Services.ShoppingCartAPI.Controllers
 {
-    [Route("ShoppingCart/[controller]")]
+    [Route("api/cart")]
     [ApiController]
     public class CartAPIController : ControllerBase
     {
@@ -127,11 +127,16 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
             try
             {
                 CartDetails cartDetails = _db.CartDetails.First(u => u.CartDetailsId == cartDetailsId);
-                var totalCountOfDetails = _db.CartDetails.Where(u => u.CartHeaderId == cartDetails.CartHeaderId).Count();
+                int totalCountOfDetails = _db.CartDetails.Where(u => u.CartHeaderId == cartDetails.CartHeaderId).Count();
                 _db.CartDetails.Remove(cartDetails);
-                if (totalCountOfDetails <= 1)
+                if (totalCountOfDetails == 1)
                 {
-                    await _db.CartHeaders.Where(u => u.CartHeaderId == cartDetails.CartHeaderId).ExecuteDeleteAsync();
+                    var cartHeaderToRemove = await _db.CartHeaders
+                     .FirstOrDefaultAsync(u => u.CartHeaderId == cartDetails.CartHeaderId);
+
+                    _db.CartHeaders.Remove(cartHeaderToRemove);
+                    // var res = await _db.CartHeaders.Where(u => u.CartHeaderId == cartDetails.CartHeaderId).ExecuteDeleteAsync();
+                    //the above line donest work , have to understand why , something to do with concurrency
                 }
                 await _db.SaveChangesAsync();
 

@@ -365,3 +365,4 @@ FodyWeavers.xsd
 /Mango.Services.ProductAPI/appsettings.local.json
 /Mango.Services.CouponAPI/appsettings.local.json
 /Mango.Services.AuthAPI/appsettings.local.json
+/CONTAINERIZATION_CICD_GUIDE.md
